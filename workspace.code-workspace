@@ -1,0 +1,20 @@
+{
+	"folders": [
+		{
+			"name": "WeatherSvcAPI",
+			"path": "WeatherSvcAPI"
+		},
+		{
+			"name": "WeatherSvc.Tests",
+			"path": "WeatherSvc.Tests"
+		},
+		{
+			"name": "WeatherSvc.Services",
+			"path": "WeatherSvc.Services"
+		},
+		{
+			"path": "WeatherSvc.Models"
+		}
+	],
+	"settings": {}
+}
