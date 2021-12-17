@@ -51,9 +51,10 @@ namespace WeatherSvc.Controllers
         {
 
             IWeatherService _service = null;
-            //ILogger<WeatherService> _logger;
 
-            _service = new WeatherService();
+            HttpClient httpClient = new HttpClient();
+            _service = new WeatherService(httpClient);
+
             try
             {
                 Task<List<IActionResult>> weatherDetails = _service.citiwiseWeather();

@@ -15,9 +15,10 @@ namespace WeatherSvc.Services
 {
     public class WeatherService : IWeatherService
     {
-        public WeatherService()
+        HttpClient httpClient;
+        public WeatherService(HttpClient _httpClient)
         {
-
+            httpClient = _httpClient;
         }
         IWeatherService _service = null;
         public async Task<List<IActionResult>> citiwiseWeather()
@@ -49,28 +50,26 @@ namespace WeatherSvc.Services
 
         public async Task<IActionResult> getWeatherDetailsByCity(string city)
         {
-            using (var client = new HttpClient())
+            try
             {
-                try
-                {
-                    client.BaseAddress = new Uri("https://api.openweathermap.org");
-                    var response = await client.GetAsync($"/data/2.5/weather?q={city}&appid=aa69195559bd4f88d79f9aadeb77a8f6&units=metric");
-                    response.EnsureSuccessStatusCode();
+                httpClient.BaseAddress = new Uri("https://api.openweathermap.org");
+                var response = await httpClient.GetAsync($"/data/2.5/weather?q={city}&appid=aa69195559bd4f88d79f9aadeb77a8f6&units=metric");
+                response.EnsureSuccessStatusCode();
 
-                    var stringResult = response.Content.ReadAsStringAsync().Result;
-                    var rawWeather = JsonConvert.DeserializeObject<OpenWeatherResponse>(stringResult);
-                    return new OkObjectResult(new WeatherInfo
-                    {
-                        Temp = rawWeather.Main.Temp,
-                        Summary = string.Join(",", rawWeather.Weather.Select(x => x.Main)),
-                        City = rawWeather.Name
-                    });
-                }
-                catch (HttpRequestException httpRequestException)
+                var stringResult = response.Content.ReadAsStringAsync().Result;
+                var rawWeather = JsonConvert.DeserializeObject<OpenWeatherResponse>(stringResult);
+                return new OkObjectResult(new WeatherInfo
                 {
-                    throw httpRequestException;
-                }
+                    Temp = rawWeather.Main.Temp,
+                    Summary = string.Join(",", rawWeather.Weather.Select(x => x.Main)),
+                    City = rawWeather.Name
+                });
             }
+            catch (HttpRequestException httpRequestException)
+            {
+                throw httpRequestException;
+            }
+
         }
 
         public async void writeTofile(List<IActionResult> weatherDetails)
